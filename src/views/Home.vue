@@ -13,7 +13,7 @@
     <div>
       <h1>Places Been</h1>
       <section>
-        <draggable id="ski-container" :list="placesBeen" group="placesToGo">
+        <draggable id="ski-container" :list="placesBeen" group="placesToGo" @end="saveMove">
           <ski-summary-home v-for="(ski, index) in placesBeen" :key="index" :ski="ski"></ski-summary-home>
         </draggable>
       </section>
@@ -51,7 +51,19 @@ mounted(){
   eventBus.$on('new-resort', (res) => {
     this.placesToGo.push(res)
   })
-}
+},
+methods: {
+		saveMove(e){
+      console.log("hello world");
+			e.preventDefault()
+			const id = this.ski._id
+			fetch("http://localhost:3000/api/skiInfo/" + id, {
+				method: 'put',
+				body: JSON.stringify(this.placesBeen),
+				headers: { 'Content-Type': 'application/json'}
+			})
+    }
+  }
 }
 </script>
 
