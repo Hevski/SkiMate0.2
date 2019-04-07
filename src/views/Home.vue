@@ -1,6 +1,6 @@
 <template lang="html">
   <div class="skiList-container">
-    <div class="skiList-container">
+    <!-- <div class="skiList-container"> -->
       <h1>Places To Go</h1>
       <new-area-form :ski="ski"></new-area-form>
       <section>
@@ -8,18 +8,17 @@
           <ski-summary-home v-for="(ski, index) in placesToGo" :key="index" :ski="ski" :index="ski.Resort"></ski-summary-home>
         </draggable>
       </section>
-    </div>
+    <!-- </div> -->
 
     <div>
       <h1>Places Been</h1>
       <section>
-        <draggable id="ski-container" :list="placesBeen" group="placesToGo" @end="saveMove">
+        <draggable id="ski-container" :list="placesBeen" group="placesToGo" v-on:change="log">
           <ski-summary-home v-for="(ski, index) in placesBeen" :key="index" :ski="ski"></ski-summary-home>
         </draggable>
       </section>
     </div>
     <div class="skiList-container">
-      <h1>blah</h1>
     </div>
   </div>
 
@@ -41,7 +40,7 @@ export default {
   return {
     ski:'',
     placesBeen:[],
-    placesToGo:[],
+    placesToGo:[]
   }
 },
 mounted(){
@@ -53,15 +52,22 @@ mounted(){
   })
 },
 methods: {
-		saveMove(e){
-      console.log("hello world");
-			e.preventDefault()
-			const id = this.ski._id
-			fetch("http://localhost:3000/api/skiInfo/" + id, {
-				method: 'put',
-				body: JSON.stringify(this.placesBeen),
+  log(event) {
+    const { added: { element: { _id } } } = event;
+
+    fetch("http://localhost:3000/something" + _id, {
+				method: 'some method',
+				body: 'some body',
 				headers: { 'Content-Type': 'application/json'}
 			})
+      .then((response) => {
+        console.log('response: ', response);
+        if (response.status === 200) {
+          return console.log('200 SUCCESS :-)');
+        }
+
+        console.log('YOU ARE UNSUCCESSFUL :-( GO HOME.')
+      });
     }
   }
 }
@@ -76,7 +82,7 @@ methods: {
 
 #skiList-container {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
 }
 
 @media (min-width:768px) {
